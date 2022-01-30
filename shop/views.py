@@ -61,3 +61,19 @@ def add_to_cart(request):
     pic = ProductInCart(user=user, product=product, count=count)
     pic.save()
     return redirect('/shop/products')
+
+def cart(request):
+    user = request.user
+    pic = ProductInCart.objects.select_related('product').filter(user=user)
+    # pic = ProductInCart.objects.raw('SELECT * FROM shop_productincart AS pic INNER JOIN shop_product AS p ON product_id = p.id;')
+    print(str(pic.query))
+    print(pic)
+    price_sum = 0
+    for p in pic:
+        print(p)
+        price_sum += p.product.price
+    context = {
+        'products_list': pic,
+        'price_sum' : price_sum,
+    }
+    return render(request, 'shop/cart.html', context)

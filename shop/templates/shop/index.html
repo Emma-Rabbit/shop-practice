@@ -9,6 +9,7 @@
     <a href="{% url 'register' %}">register</a>
     <a href="{% url 'login' %}">login</a>
     <a href="{% url 'products' %}">products</a>
+    <a href="{% url 'cart' %}">cart</a>
     <form action="{% url 'logout'%}" method="post">
         {% csrf_token %}
         <input type="submit" value="logout">
