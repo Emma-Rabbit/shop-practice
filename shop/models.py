@@ -12,4 +12,4 @@ class ProductInCart(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     count = models.IntegerField(default=1)
     def __str__(self):
-        return 'U:{}, P:{}'.format(self.user, self.product)
+        return 'U:{}, P:{}, ID:{}'.format(self.user, self.product, self.pk)

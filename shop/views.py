@@ -6,7 +6,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 def index(request):
-    return render(request, 'shop/index.html')
+    context = {
+        'user': request.user,
+    }
+    return render(request, 'shop/index.html', context)
 
 def products(request):
     if request.method == 'POST':
@@ -17,15 +20,23 @@ def products(request):
         return redirect('/shop/products')
     if request.method == 'GET':
         products_list = Product.objects.all()
-        template = loader.get_template('shop/products.html')
         context = {
             'products_list': products_list,
         }
-        return HttpResponse(template.render(context, request))
+        return render(request, 'shop/products.html', context)
 
 def register(request):
     if request.method == 'POST':
         name = request.POST['name']
+        try:
+            check = User.objects.get(username=name)
+        except:
+            check = None
+        if check is not None:
+            context = {
+                'text': 'username taken'
+            }
+            return render(request, 'shop/register.html', context)
         email = request.POST['email']
         password = request.POST['password']        
         user = User.objects.create_user(name, email, password)
@@ -65,15 +76,20 @@ def add_to_cart(request):
 def cart(request):
     user = request.user
     pic = ProductInCart.objects.select_related('product').filter(user=user)
-    # pic = ProductInCart.objects.raw('SELECT * FROM shop_productincart AS pic INNER JOIN shop_product AS p ON product_id = p.id;')
-    print(str(pic.query))
-    print(pic)
     price_sum = 0
     for p in pic:
-        print(p)
         price_sum += p.product.price
     context = {
         'products_list': pic,
         'price_sum' : price_sum,
     }
+    print(pic)
     return render(request, 'shop/cart.html', context)
+
+def remove_from_cart(request):
+    if not request.user.is_authenticated:
+        return redirect('/shop/login')
+    pic_id = request.POST['id']
+    pic = ProductInCart.objects.get(pk=pic_id)
+    pic.delete()
+    return redirect('/shop/cart')
