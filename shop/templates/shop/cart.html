@@ -8,15 +8,15 @@
     {% if products_list %}
     <ul>
         {% for p in products_list %}
-            <p> {{p.product.count}} {{p.product.name}}  {{p.product.price}}zł</p>
+            <p> {{p.count}} {{p.product.name}}  {{p.product.price}}zł</p>
         <form action="removeFromCart" method="post">
             {% csrf_token %}
             <input type="hidden" value={{p.pk}} name=id>
             <input type="submit" value="Remove">
         </form>
-        {% endfor %}        
+        {% endfor %}
     </ul>
-    <p>suma: {{ price_sum }}zł</p>
+    <p>sum: {{ price_sum }}zł</p>
     {% else %}
         <p>brak produktów w koszyku</p>
     {% endif %}

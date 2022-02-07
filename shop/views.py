@@ -78,7 +78,7 @@ def cart(request):
     pic = ProductInCart.objects.select_related('product').filter(user=user)
     price_sum = 0
     for p in pic:
-        price_sum += p.product.price
+        price_sum += p.product.price * p.count
     context = {
         'products_list': pic,
         'price_sum' : price_sum,

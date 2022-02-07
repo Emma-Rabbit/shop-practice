@@ -5,6 +5,7 @@
     <title>products</title>
   </head>
   <body>
+    <a href="{% url 'cart' %}">cart</a>
     {% if products_list %}
     <ul>
         {% for product in products_list %}
